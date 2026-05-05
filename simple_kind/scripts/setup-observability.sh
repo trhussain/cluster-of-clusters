@@ -11,7 +11,7 @@ done
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 
-echo "Installing Central Observability (Grafana + Prometheus) on karmada-host..."
+echo "Installing Central Observability (Grafana + Prometheus) on kubectl-host..."
 
 helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
   --kube-context kind-cluster-01 \

@@ -9,6 +9,7 @@ HOST_KUBECONFIG="$HOME/.kube/config"
 HOST_IPADDRESS="${HOST_IPADDRESS:-}"
 NODE_MEMORY_LIMIT="NOT SET"
 TMP_CONFIG_DIR=$(mktemp -d)
+SETUP_OBSERVABILITY="true"
 trap 'rm -rf "${TMP_CONFIG_DIR}"' EXIT
 sleeper() { 
   local seconds=${1:-30}  # default 30 if not passed
@@ -116,3 +117,15 @@ echo "==> Verifying joined clusters..."
 sleeper 15
 kubectl --kubeconfig=$HOME/.karmada/karmada-apiserver.config get clusters
 
+# Auto-run if flag set, otherwise prompt
+if [[ "${SETUP_OBSERVABILITY}" == "true" ]]; then
+  echo "Auto-running observability setup..."
+  ${ROOT_DIR}/scripts/setup-observability.sh
+else
+  read -p "Setup observability (Grafana + Prometheus)? [y/N] " answer
+  if [[ "${answer}" =~ ^[Yy]$ ]]; then
+    ${ROOT_DIR}/scripts/setup-observability.sh
+  else
+    echo "Skipping observability setup."
+  fi
+fi
